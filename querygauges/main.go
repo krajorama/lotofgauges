@@ -14,6 +14,7 @@ import (
 func main() {
 	promURL := flag.String("url", "http://localhost:9090", "Prometheus server URL")
 	query := flag.String("query", "", "PromQL query to execute")
+	minDelay := flag.Duration("min-delay", 0, "Minimum delay between queries")
 	maxDelay := flag.Duration("max-delay", 100*time.Millisecond, "Maximum delay between queries")
 	flag.Parse()
 
@@ -52,8 +53,8 @@ func main() {
 			os.Exit(1)
 		}
 
-		// Random delay between 0 and maxDelay
-		delay := time.Duration(rand.Float64() * float64(*maxDelay))
+		// Random delay between minDelay and maxDelay
+		delay := *minDelay + time.Duration(rand.Float64()*float64(*maxDelay-*minDelay))
 		time.Sleep(delay)
 	}
 }
